@@ -13,20 +13,8 @@
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark border-bottom border-secondary">
-    <div class="container">
-        <a class="navbar-brand brand" href="/">HEALTHHELP</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div id="nav" class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" th:href="@{/web/registros}">Registros</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/web/recomendacoes}">Recomendações</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <section class="hero">
     <div class="container">
@@ -36,7 +24,9 @@
                     <span class="me-2">Nova rotina</span>
                     <span class="badge text-bg-success">IA ativa</span>
                 </div>
-                <h1 class="display-4 fw-bold mb-3">Organize sua rotina e receba orientações inteligentes de bem-estar.</h1>
+                <h1 class="display-4 fw-bold mb-3">
+                    Organize sua rotina e receba orientações inteligentes de bem-estar.
+                </h1>
                 <p class="lead text-secondary mb-4">
                     Registre sono, trabalho, exercícios e momentos de lazer. O HealthHelp analisa seus hábitos e gera
                     recomendações personalizadas para uma rotina mais equilibrada.
@@ -50,7 +40,9 @@
                 <div class="card card-glass shadow-lg border-0 p-3">
                     <div class="card-body">
                         <h5 class="card-title mb-3">Resumo rápido</h5>
-                        <p class="mb-2 text-secondary">Acompanhe a pontuação de equilíbrio da sua rotina ao longo dos dias.</p>
+                        <p class="mb-2 text-secondary">
+                            Acompanhe a pontuação de equilíbrio da sua rotina ao longo dos dias.
+                        </p>
                         <ul class="list-group list-group-flush small">
                             <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
                                 <span>Rotina de hoje</span>
@@ -61,7 +53,7 @@
                                 <span class="text-warning">Consulte em Recomendações</span>
                             </li>
                             <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
-                                <span>Registros salvos</span>
+                                <span>Data atual</span>
                                 <span th:text="${T(java.time.LocalDate).now()}"></span>
                             </li>
                         </ul>

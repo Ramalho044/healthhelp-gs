@@ -2,7 +2,6 @@ package br.com.global.healthhelp.controller;
 
 import br.com.global.healthhelp.dto.AtividadeDTO;
 import br.com.global.healthhelp.dto.RegistroDiarioDTO;
-import br.com.global.healthhelp.model.CategoriaAtividade;
 import br.com.global.healthhelp.model.Usuario;
 import br.com.global.healthhelp.repository.CategoriaAtividadeRepository;
 import br.com.global.healthhelp.service.RegistroDiarioService;
@@ -10,10 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -38,24 +34,21 @@ public class RegistroDiarioWebController {
         return u;
     }
 
-    @GetMapping
-    public String listar(@PageableDefault(size = 10) Pageable pageable, Model model) {
-        var usuario = getUsuarioFake();
-        var pagina = registroService.listarPorUsuario(usuario, pageable);
-        model.addAttribute("pagina", pagina);
-        return "registros/lista";
+    @GetMapping("/web/registros")
+    public String listarRegistros(Model model) {
+        model.addAttribute("activePage", "registros");
+        return "registros-diarios/lista";
     }
 
     @GetMapping("/novo")
     public String novo(Model model) {
         model.addAttribute("dataHoje", LocalDate.now());
-        List<CategoriaAtividade> categorias = categoriaRepo.findAll();
-        model.addAttribute("categorias", categorias);
+        model.addAttribute("categorias", categoriaRepo.findAll());
         return "registros/form";
     }
 
     @PostMapping
-    public String salvar(@RequestParam("dataRegistro") LocalDate dataRegistro,
+    public String salvar(@RequestParam("dataRef") LocalDate dataRef,
                          @RequestParam(value = "pontuacaoEquilibrio", required = false) Integer pontuacaoEquilibrio,
                          @RequestParam(value = "observacoes", required = false) String observacoes,
                          @RequestParam("idCategoria") Long idCategoria,
@@ -66,8 +59,21 @@ public class RegistroDiarioWebController {
         LocalDateTime inicioDt = LocalDateTime.parse(inicio, formatter);
         LocalDateTime fimDt = LocalDateTime.parse(fim, formatter);
 
-        AtividadeDTO atividade = new AtividadeDTO(null, idCategoria, inicioDt, fimDt, null);
-        RegistroDiarioDTO dto = new RegistroDiarioDTO(null, dataRegistro, pontuacaoEquilibrio, observacoes, List.of(atividade));
+        AtividadeDTO atividade = new AtividadeDTO(
+                null,
+                idCategoria,
+                inicioDt,
+                fimDt,
+                observacoes
+        );
+
+        RegistroDiarioDTO dto = new RegistroDiarioDTO(
+                null,
+                dataRef,
+                pontuacaoEquilibrio,
+                observacoes,
+                List.of(atividade)
+        );
 
         Usuario usuario = getUsuarioFake();
         registroService.salvarRegistro(usuario, dto);

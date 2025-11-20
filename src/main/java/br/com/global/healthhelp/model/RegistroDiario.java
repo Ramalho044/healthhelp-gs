@@ -2,32 +2,28 @@ package br.com.global.healthhelp.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "REGISTRO_DIARIO")
+@Table(name = "REGISTRO_DIARIO", schema = "RM558024")
 public class RegistroDiario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID_REGISTRO")
+    @Column(name = "REGISTRO_ID")
     private Long id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "ID_USUARIO")
+    @JoinColumn(name = "USUARIO_ID")
     private Usuario usuario;
 
-    @Column(name = "DATA_REGISTRO", nullable = false)
+    @Column(name = "DATA_REF", nullable = false)
     private LocalDate dataRegistro;
 
-    @Column(name = "PONTUACAO_EQUIBRIO")
+    @Column(name = "PONTUACAO_EQUILIBRIO")
     private Integer pontuacaoEquilibrio;
 
     @Column(name = "OBSERVACOES", length = 500)
     private String observacoes;
-
-    @Column(name = "CRIADO_EM", nullable = false)
-    private LocalDateTime criadoEm = LocalDateTime.now();
 
     public Long getId() {
         return id;
@@ -35,14 +31,6 @@ public class RegistroDiario {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public LocalDateTime getCriadoEm() {
-        return criadoEm;
-    }
-
-    public void setCriadoEm(LocalDateTime criadoEm) {
-        this.criadoEm = criadoEm;
     }
 
     public String getObservacoes() {
