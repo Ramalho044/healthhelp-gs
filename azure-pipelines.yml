@@ -12,28 +12,33 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
+  # Nome do repositório da imagem dentro do ACR
   imageRepository: 'healthhelp-gs'
+
+  # Endereço do seu ACR
   containerRegistry: 'acrhealthhelprm558024.azurecr.io'
-  dockerTag: 'latest'          # se quiser, depois troca pra $(Build.BuildId)
+
+  # Tag que será usada na imagem 
+  dockerTag: 'latest'
 
 stages:
-- stage: Build_Test_Image
-  displayName: 'Build, Test e Docker Image'
+- stage: BuildAndPush
+  displayName: 'Build, Testes, Docker e Artefatos'
   jobs:
   - job: Build
-    displayName: 'Compilar, testar e publicar imagem'
+    displayName: 'Compilar, testar, montar imagem e publicar artefatos'
     steps:
       - checkout: self
 
-      # Java 21
+      # Garante Java 21 no agente
       - task: JavaToolInstaller@0
-        displayName: 'Garantir Java 21'
+        displayName: 'Configurar Java 21'
         inputs:
           versionSpec: '21'
           jdkArchitectureOption: 'x64'
           jdkSourceOption: 'PreInstalled'
 
-      # Build + Testes com Gradle
+      # Build + testes com Gradle
       - task: Gradle@3
         displayName: 'Gradle clean test bootJar'
         inputs:
@@ -43,24 +48,31 @@ stages:
           testResultsFiles: '**/build/test-results/test/*.xml'
           tasks: 'clean test bootJar'
 
-      # Publicar resultados de teste
+      # Publica resultado de testes 
       - task: PublishTestResults@2
-        displayName: 'Publicar testes JUnit'
+        displayName: 'Publicar resultados de teste JUnit'
         condition: succeededOrFailed()
         inputs:
           testResultsFormat: 'JUnit'
           testResultsFiles: '**/build/test-results/test/*.xml'
-          testRunTitle: 'JUnit - HealthHelp'
+          testRunTitle: 'HealthHelp - JUnit'
 
-      # Build + Push da imagem no ACR
+      # Build da imagem Docker usando o JAR já gerado e push pro ACR
       - task: Docker@2
         displayName: 'Build e Push da imagem no ACR'
         inputs:
-          containerRegistry: 'sc-acr-healthhelp2'   # <- seu service connection DOCKER
+          # NOME EXATO do service connection DOCKER que você criou
+          containerRegistry: 'sc-acr-healthhelp2'
           repository: '$(imageRepository)'
           command: 'buildAndPush'
-          Dockerfile: 'Dockerfile'
+          Dockerfile: 'Dockerfile.ci'   
           tags: |
             $(dockerTag)
 
-      # Publicar scripts com
+      # Publica a pasta scripts/ como Build Artifact pro Release usar
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publicar scripts de infra (infra-scripts)'
+        inputs:
+          pathToPublish: 'scripts'
+          artifactName: 'infra-scripts'
+          publishLocation: 'Container'
