@@ -1,34 +1,24 @@
+# dockerfiles/Dockerfile.app
 
 # Etapa de build
 FROM eclipse-temurin:17-jdk-alpine AS build
-WORKDIR /workspace/app
+WORKDIR /workspace
 
-# Instala Maven
-RUN apk add --no-cache maven
+# Copia configuração do Gradle
+COPY gradlew gradlew.bat settings.gradle build.gradle ./
+COPY gradle gradle
+COPY src src
 
-# Copia arquivos do projeto
-COPY pom.xml .
-COPY src ./src
-
-# Compila o projeto (sem rodar testes)
-RUN mvn clean package -DskipTests
+RUN chmod +x gradlew
+RUN ./gradlew clean bootJar --no-daemon
 
 # Etapa de runtime
 FROM eclipse-temurin:17-jre-alpine
-
-# Diretório da aplicação
 WORKDIR /app
 
-# Copia o .jar gerado do build
-# Isso pega qualquer JAR gerado em target 
-COPY --from=build /workspace/app/target/*.jar app.jar
+COPY --from=build /workspace/build/libs/*.jar app.jar
 
-# Porta padrão Spring Boot (ajusta se sua app usar outra)
 EXPOSE 8080
+ENV JAVA_OPTS=""
 
-# Usuário não-root para segurança
-RUN addgroup -S spring && adduser -S spring -G spring
-USER spring
-
-# Comando de entrada genérico, independe do nome do pacote/classe
-ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
