@@ -12,9 +12,9 @@ APP_ACI_NAME="aci-healthhelp-app"
 DNS_APP="healthhelp-app-gs"
 
 IMAGE_REPOSITORY="healthhelp-gs"
-IMAGE_TAG="${IMAGE_TAG:-latest}"   # pode sobrescrever via variável
+IMAGE_TAG="${IMAGE_TAG:-latest}"   
 
-# Dados do banco
+# Dados do banco 
 DB_SERVER_FQDN="healthhelp-sql-gs.brazilsouth.azurecontainer.io"
 DB_NAME="HealthHelp"
 DB_USER="Global"
