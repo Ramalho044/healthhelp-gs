@@ -1,46 +1,66 @@
 trigger:
   branches:
     include:
-      - main
+      - master
+
+pr:
+  branches:
+    include:
+      - master
 
 pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  appName: 'workingsafe-api'
-  acrName: 'healthhelp'
-  acrLoginServer: 'healthhelp.azurecr.io'
-  imageRepository: 'fiap/$(appName)'
-  imageTag: '$(Build.BuildId)'
-  dockerRegistryServiceConnection: 'sc-acr-healthhelp'
+  imageRepository: 'healthhelp-gs'
+  containerRegistry: 'acrhealthhelprm558024.azurecr.io'
+  dockerTag: 'latest'          # se quiser, depois troca pra $(Build.BuildId)
 
-  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+stages:
+- stage: Build_Test_Image
+  displayName: 'Build, Test e Docker Image'
+  jobs:
+  - job: Build
+    displayName: 'Compilar, testar e publicar imagem'
+    steps:
+      - checkout: self
 
-steps:
-  # 1) Checkout do código
-  - checkout: self
+      # Java 21
+      - task: JavaToolInstaller@0
+        displayName: 'Garantir Java 21'
+        inputs:
+          versionSpec: '21'
+          jdkArchitectureOption: 'x64'
+          jdkSourceOption: 'PreInstalled'
 
-  # 2) Build + Push da imagem pro ACR
-  - task: Docker@2
-    displayName: 'Build and push image to ACR'
-    inputs:
-      command: buildAndPush
-      containerRegistry: '$(dockerRegistryServiceConnection)'
-      repository: '$(imageRepository)'
-      dockerfile: '$(dockerfilePath)'
-      tags: |
-        $(imageTag)
-      buildContext: '$(Build.SourcesDirectory)'
+      # Build + Testes com Gradle
+      - task: Gradle@3
+        displayName: 'Gradle clean test bootJar'
+        inputs:
+          gradleWrapperFile: 'gradlew'
+          gradleOptions: '-Xmx3072m'
+          publishJUnitResults: true
+          testResultsFiles: '**/build/test-results/test/*.xml'
+          tasks: 'clean test bootJar'
 
-  # 3) Gerar artefato simples para a Release enxergar o build
-  - script: |
-      echo "IMAGE_NAME=$(acrLoginServer)/$(imageRepository)"  > build-info.txt
-      echo "IMAGE_TAG=$(Build.BuildId)"                      >> build-info.txt
-    displayName: 'Gerar arquivo de build-info'
+      # Publicar resultados de teste
+      - task: PublishTestResults@2
+        displayName: 'Publicar testes JUnit'
+        condition: succeededOrFailed()
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: '**/build/test-results/test/*.xml'
+          testRunTitle: 'JUnit - HealthHelp'
 
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publicar artefato de build'
-    inputs:
-      PathtoPublish: 'build-info.txt'
-      ArtifactName: 'drop'
-      publishLocation: 'Container'
+      # Build + Push da imagem no ACR
+      - task: Docker@2
+        displayName: 'Build e Push da imagem no ACR'
+        inputs:
+          containerRegistry: 'sc-acr-healthhelp2'   # <- seu service connection DOCKER
+          repository: '$(imageRepository)'
+          command: 'buildAndPush'
+          Dockerfile: 'Dockerfile'
+          tags: |
+            $(dockerTag)
+
+      # Publicar scripts com
