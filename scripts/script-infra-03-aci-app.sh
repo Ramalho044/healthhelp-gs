@@ -21,8 +21,7 @@ echo ">> [APP-ACI] Removendo container antigo (se existir)..."
 az container delete \
   --resource-group "$RESOURCE_GROUP" \
   --name "$ACI_NAME" \
-  --yes \
-  --no-wait || true
+  --yes || true
 
 echo ">> [APP-ACI] Criando container ACI para a aplicação..."
 az container create \
@@ -43,3 +42,4 @@ az container create \
 
 echo ">> [APP-ACI] Container criado."
 echo "   URL: http://${DNS_NAME_LABEL}.brazilsouth.azurecontainer.io:8080"
+echo "   Swagger: http://${DNS_NAME_LABEL}.brazilsouth.azurecontainer.io:8080/swagger-ui.html"
