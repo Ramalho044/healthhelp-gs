@@ -10,7 +10,7 @@ LOCATION="brazilsouth"
 SQL_ACI_NAME="aci-healthhelp-sql"
 DNS_SQL="healthhelp-sql-gs"   
 
-
+# Senha do usuário SA (variável de ambiente obrigatória)
 if [ -z "$MSSQL_SA_PASSWORD" ]; then
   echo "ERRO: defina MSSQL_SA_PASSWORD antes de rodar. Ex:"
   echo "  export MSSQL_SA_PASSWORD=\"SqlAdmin#2025!\""
@@ -21,7 +21,6 @@ echo ">> [SQL-ACI] Selecionando subscription..."
 az account set --subscription "$SUBSCRIPTION"
 
 echo ">> [SQL-ACI] Criando container ACI para SQL Server..."
-
 az container create \
   --resource-group "$RG_NAME" \
   --name "$SQL_ACI_NAME" \

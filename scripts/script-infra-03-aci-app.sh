@@ -12,9 +12,9 @@ APP_ACI_NAME="aci-healthhelp-app"
 DNS_APP="healthhelp-app-gs"
 
 IMAGE_REPOSITORY="healthhelp-gs"
-IMAGE_TAG="latest"  
+IMAGE_TAG="${IMAGE_TAG:-latest}"   # pode sobrescrever via variável
 
-# Dados do banco 
+# Dados do banco
 DB_SERVER_FQDN="healthhelp-sql-gs.brazilsouth.azurecontainer.io"
 DB_NAME="HealthHelp"
 DB_USER="Global"
@@ -29,6 +29,12 @@ ACR_USERNAME=$(az acr credential show -n "$ACR_NAME" --query username -o tsv)
 ACR_PASSWORD=$(az acr credential show -n "$ACR_NAME" --query passwords[0].value -o tsv)
 
 IMAGE_FULL="${ACR_LOGIN_SERVER}/${IMAGE_REPOSITORY}:${IMAGE_TAG}"
+
+echo ">> [APP-ACI] Removendo container antigo (se existir)..."
+az container delete \
+  --resource-group "$RG_NAME" \
+  --name "$APP_ACI_NAME" \
+  --yes || echo "Nenhum container anterior para remover."
 
 echo ">> [APP-ACI] Criando container ACI para a aplicação..."
 az container create \
