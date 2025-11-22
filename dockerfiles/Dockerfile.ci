@@ -2,8 +2,8 @@ FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
 
-COPY build/libs/*.jar app.jar
+# copia o jar gerado pelo Gradle
+COPY ./build/libs/*.jar app.jar
 
 EXPOSE 8080
-
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
