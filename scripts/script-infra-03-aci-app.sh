@@ -41,5 +41,5 @@ az container create \
     SPRING_DATASOURCE_PASSWORD="Healthhelp2025!"
 
 echo ">> [APP-ACI] Container criado."
-echo "   URL: http://${DNS_NAME_LABEL}.brazilsouth.azurecontainer.io:8080"
+echo "   URL:     http://${DNS_NAME_LABEL}.brazilsouth.azurecontainer.io:8080"
 echo "   Swagger: http://${DNS_NAME_LABEL}.brazilsouth.azurecontainer.io:8080/swagger-ui.html"
