@@ -65,7 +65,7 @@ stages:
           containerRegistry: 'sc-acr-healthhelp2'
           repository: '$(imageRepository)'
           command: 'buildAndPush'
-          Dockerfile: 'Dockerfile.ci'   
+          Dockerfile: 'dockerfiles/Dockerfile.ci'   
           tags: |
             $(dockerTag)
 
