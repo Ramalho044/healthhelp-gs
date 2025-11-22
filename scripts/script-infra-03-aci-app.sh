@@ -7,8 +7,9 @@ ACR_NAME="acrhealthhelprm558024"
 ACI_NAME="aci-healthhelp-app"
 DNS_NAME_LABEL="healthhelp-app-gs"
 IMAGE_REPO="healthhelp-gs"
+LOCATION="brazilsouth"
 
-# Tag vem de variável, se não vier usa 'latest'
+# Tag vem da variável de ambiente IMAGE_TAG; se não vier usa 'latest'
 IMAGE_TAG="${IMAGE_TAG:-latest}"
 
 echo ">> [APP-ACI] Selecionando subscription..."
@@ -27,6 +28,8 @@ echo ">> [APP-ACI] Criando container ACI para a aplicação..."
 az container create \
   --resource-group "$RESOURCE_GROUP" \
   --name "$ACI_NAME" \
+  --location "$LOCATION" \
+  --os-type Linux \
   --image "${ACR_LOGIN_SERVER}/${IMAGE_REPO}:${IMAGE_TAG}" \
   --cpu 2 \
   --memory 4 \
@@ -40,6 +43,9 @@ az container create \
     SPRING_DATASOURCE_USERNAME="Global" \
     SPRING_DATASOURCE_PASSWORD="Healthhelp2025!"
 
-echo ">> [APP-ACI] Container criado."
-echo "   URL:     http://${DNS_NAME_LABEL}.brazilsouth.azurecontainer.io:8080"
-echo "   Swagger: http://${DNS_NAME_LABEL}.brazilsouth.azurecontainer.io:8080/swagger-ui.html"
+echo ">> [APP-ACI] Container criado com sucesso."
+echo "   App:    http://${DNS_NAME_LABEL}.brazilsouth.azurecontainer.io:8080"
+echo "   Swagger (Spring):"
+echo "   -> http://${DNS_NAME_LABEL}.brazilsouth.azurecontainer.io:8080/swagger-ui.html"
+echo "   ou"
+echo "   -> http://${DNS_NAME_LABEL}.brazilsouth.azurecontainer.io:8080/swagger-ui/index.html"
