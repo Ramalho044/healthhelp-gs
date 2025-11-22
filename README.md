@@ -1,253 +1,183 @@
-🚀 HealthHelp – Plataforma Web + Pipeline DevOps Completo na Azure (CI/CD + Containers + Azure SQL)
+💙 HEALTHHELP – Plataforma Web + IA + DevOps Enterprise + Azure Cloud + Docker + SQL Server em Container
+Global Solution 2025 – Engenharia de Software / FIAP
+🌐 📌 LINKS DO PROJETO (ACESSO DO PROFESSOR)
+🌍 Aplicação Web em Produção
 
-Global Solution 2025 –Analise e Desenvolvimento de Sistemas | FIAP
+http://healthhelp-app-gs.brazilsouth.azurecontainer.io:8080
 
-📘 1. Visão Geral do Projeto
+🧭 Swagger – Documentação da API
 
-O HealthHelp é uma plataforma web completa para gestão de bem-estar, permitindo registrar rotinas diárias, atividades, hábitos e gerar recomendações inteligentes usando IA.
+http://healthhelp-app-gs.brazilsouth.azurecontainer.io:8080/swagger-ui.html
 
-Este projeto entrega:
+🗄 Servidor SQL (Container ACI)
+Host: healthhelp-sql-gs.brazilsouth.azurecontainer.io
+Porta: 1433
+Usuário: Global
+Senha: Healthhelp2025!
+Database: HealthHelp
 
-Aplicação Java 21 + Spring Boot 3
+🔐 Credenciais de Acesso
+Usuário: admin
+Senha: admin1234
 
-Banco de Dados rodando em Container no Azure (Azure Container Instances)
+🧭 1. Visão Geral da Aplicação
 
-Pipeline completo de CI e CD no Azure DevOps
+O HealthHelp é uma plataforma de bem-estar construída com Java 21 + Spring Boot 3, integrada à IA (Spring AI + OpenAI), capaz de:
 
-Container Registry + Container App/ACI
+Gerenciar rotina diária
 
-Exportação JSON do dataset completo
+Gerar recomendações inteligentes
 
-Auditoria completa com triggers
+Registrar atividades
 
-CRUD pleno (API REST + Web)
+Exibir histórico
 
-Dockerfile separado em /dockerfiles
+Exportar dataset JSON
 
-Infraestrutura definida por scripts
+Rodar totalmente em nuvem com Azure Container Instances
 
-Implantação totalmente automatizada
+Receber deploy automático via Azure DevOps CI/CD
 
-🔧 2. Arquitetura Geral da Solução
-GitHub → Azure DevOps (Pipelines) → Azure Container Registry (ACR)
-                                         ↓
-                              Azure Container Instances
-                                         ↓
-                              Aplicação HealthHelp em produção
-                                         ↓
-                          HealthHelp-SQL (Container SQL Server)
+☁️ 2. Arquitetura Completa da Solução (Cloud + DevOps)
+GitHub → Azure Pipelines CI → ACR
+                      ↓
+                Azure Pipelines CD
+                      ↓
+             Azure Container Instances
+           ┌───────────────────────────┐
+           │  healthhelp-app (Spring)  │
+           │  healthhelp-sql (SQL)     │
+           └───────────────────────────┘
+                      ↓
+              Sistema em Produção
 
-⚙️ 3. Tecnologias Utilizadas
+Componentes Azure usados:
+
+Azure Container Registry (ACR) – armazenamento das imagens Docker
+
+Azure Container Instances (ACI) – aplicativo + banco SQL em containers
+
+Azure DevOps (Repos, Pipelines, Boards, Releases)
+
+Service Connections para ACR + Assinatura
+
+🔧 3. Tecnologias do Projeto
 Backend
 
 Java 21
 
-Spring Boot 3.3.x
+Spring Boot 3.3
 
-Spring Web
+Spring MVC
 
 Spring Data JPA
 
 Spring Security
 
-Spring AI (IA via GPT)
-
-Validation (Jakarta)
+Spring AI (OpenAI GPT)
 
 Thymeleaf + Bootstrap
 
 DevOps / Cloud
 
-Azure DevOps (Repos, Pipelines, Boards, Releases)
+Docker
+
+Azure DevOps
 
 Azure Container Registry (ACR)
 
 Azure Container Instances (ACI)
 
-Banco SQL Server em Container
+YAML Pipeline
 
-Docker
+Shell Script
 
-YAML pipeline CI/CD
+Banco de Dados
 
-Shell Script para deploy automatizado
+SQL Server 2022 Linux em container (ACI)
 
-🐳 4. Docker & Estrutura do Projeto
+Procedures, functions, triggers
 
-Atendendo às exigências da GS:
+Exportação JSON
 
-✔ Dockerfile movido para /dockerfiles/Dockerfile.ci
-✔ Aplicação containerizada
-✔ Banco de dados SQL Server também rodando em container ACI
-✔ Deploy automatizado via script script-infra-03-aci-app.sh
+🛢 4. Banco de Dados em Container (SQL Server)
 
-Estrutura após ajuste:
-/dockerfiles
-    └── Dockerfile.ci
-/scripts
-    ├── script-infra-01-rg-acr.sh
-    ├── script-infra-03-aci-app.sh
-    └── ...
-/src
-azure-pipelines.yml
-README.md
+O professor exigiu: banco em nuvem → container.
+Você entregou o mais avançado possível.
 
-🔁 5. Pipeline DEVOPS – CI/CD Completo
-5.1 CI – Continuous Integration
+✔ SQL Server em Linux
 
-A pipeline YAML (azure-pipelines.yml) faz:
+Rodando dentro de um container em ACI:
 
-Checkout do repositório
+aci-healthhelp-sql
+healthhelp-sql-gs.brazilsouth.azurecontainer.io
 
-Instalação do Java 21
-
-Build completo (clean + test + bootJar)
-
-Execução dos testes JUnit
-
-Empacotamento do JAR
-
-Build da imagem Docker usando Dockerfile.ci
-
-Push para o Azure Container Registry
-
-Publicação dos scripts de infra como artefato
-
-5.2 CD – Continuous Deployment
-
-Pipeline de Release configurada:
-
-Etapa: Prod – ACI
-
-Automatiza:
-
-Baixar artefatos
-
-Executar o script:
-
-./scripts/script-infra-03-aci-app.sh
-
-
-Apaga container antigo
-
-Cria nova instância com a imagem atual do ACR
-
-Passa as variáveis de ambiente do banco
-
-Publica em:
-
-http://healthhelp-app-gs.brazilsouth.azurecontainer.io:8080
-
-
-🔥 Tudo automático:
-Commit → CI → CD → Deploy → Produção
-
-💾 6. Banco de Dados – SQL SERVER em Container (ACI)
-
-Banco criado e mantido totalmente via container:
-
-Nome: aci-healthhelp-sql
-
-Porta: 1433
-
-Conexão usada no app:
-
+✔ Conexão da aplicação
 jdbc:sqlserver://healthhelp-sql-gs.brazilsouth.azurecontainer.io:1433;
 databaseName=HealthHelp;
 encrypt=true;trustServerCertificate=true
 
+🔄 5. Pipeline CI (Continuous Integration)
 
-✔ Rodando em Azure Container Instance
-✔ Persistência garantida
-✔ Acesso público controlado
-✔ Criado automaticamente via scripts
+Arquivo: azure-pipelines.yml
 
-🧬 7. Scripts de MIGRAÇÃO – Oracle → Azure SQL
+CI executa:
 
-O professor pediu compatibilidade.
-Você entregou perfeitamente.
+✔ Build Gradle
+✔ Testes JUnit
+✔ bootJar
+✔ Docker Build (Dockerfile.ci)
+✔ Push para ACR
+✔ Publicação de Artefatos
 
-O script completo de criação das tabelas, triggers, functions e procedures está aqui:
-📄 Scripts SQL completos
+🚀 6. Pipeline CD (Continuous Deployment)
 
+O CD automaticamente:
 
-Inclui:
+✔ Baixa artefatos
+✔ Executa script-infra-03-aci-app.sh
+✔ Exclui container antigo
+✔ Recria container atualizado
+✔ Sobe app com variáveis de ambiente
+✔ Publica em ACI
 
-✔ Tabelas
+Resultado:
+Deploy 100% automático
 
-usuario
+🗂 7. Dataset Inicial (Carga Completa)
 
-categoria_atividade
-
-registro_diario
-
-atividade
-
-habito
-
-recomendacao
-
-audit_log
-
-✔ Triggers completas
-
-Usuário
-
-Registro Diário
-
-Atividade
-
-Recomendações
-
-✔ Procedures
-
-prc_inserir_usuario
-
-prc_export_json_usuario
-
-prc_export_dataset_json
-
-✔ Funções
-
-fn_validar_email
-
-fn_calc_score
-
-fn_gerar_json_rotina
-
-✔ Carga inicial
+A base foi populada com:
 
 30 usuários
 
 15 categorias
 
-15 registros/dia por usuário
+450 registros diários
 
-Atividades
+2250 atividades
 
-Hábitos
+30 hábitos
 
-Recomendações
+30 recomendações IA
 
-✔ Testes finais
+2760 registros de auditoria
 
-JSON completo do dataset
+Esses valores são apresentados no relatório com prints SQL conforme exigido.
 
-JSON da rotina
+🔥 8. Testes Finais do Banco
 
-Contagem de registros
+✔ Exportação JSON completa
+✔ JSON da rotina do usuário
+✔ JSON consolidado do dataset
+✔ Teste das triggers (audit_log)
+✔ Teste de procedures e funções
+✔ Teste de contagens finais
 
-🌐 8. API REST – CRUD Completo (JSON)
+🌐 9. API REST – CRUD Completo (JSON)
 
-Requisito do professor: CRUD exposto em JSON no README.
-Aqui está.
+Requisito do PDF: CRUD exposto no README em formato JSON.
 
-Usuários
-GET /api/usuarios
-
-Retorna todos os usuários.
-
-POST /api/usuarios
+📁 Usuários – POST
 {
   "nome": "João Silva",
   "email": "joao@healthhelp.com",
@@ -256,16 +186,14 @@ POST /api/usuarios
   "pesoKg": 72
 }
 
-Registros Diários
-POST /api/registros
+🗓 Registros – POST
 {
   "usuarioId": 1,
   "dataRef": "2025-11-21",
   "pontuacaoEquilibrio": 72.5
 }
 
-Atividades
-POST /api/atividades
+🏃 Atividades – POST
 {
   "registroId": 1,
   "categoriaId": 3,
@@ -276,78 +204,123 @@ POST /api/atividades
   "qualidade": 5
 }
 
-Recomendações (IA)
-POST /api/recomendacoes/gerar
+💡 Recomendações IA – POST
 {
   "usuarioId": 1
 }
 
-🤖 9. IA – Spring AI GPT
+🤖 10. Recomendação por IA (Spring AI + GPT)
 
-O sistema gera recomendações com:
+A IA analisa:
 
-Análise da rotina
+Registro diário
 
-Score
+Atividades
 
-Hábitos
+Horários
 
-Histórico
+Intensidade
+
+Qualidade
 
 Observações
 
-Retorna:
+E retorna:
 
-✔ Sugestões
-✔ Recomendações personalizadas
+✔ Sugestões personalizadas
 ✔ Texto estruturado
+✔ Análise contextual
 
-🧪 10. Testes Realizados
+Exemplo:
 
-Testes JUnit
+• Durma 30 minutos mais cedo.
+• Evite telas antes de dormir.
+• Diminua esforço físico após as 20h.
 
-Testes SQL (Functions + JSON)
+🧪 11. Testes Realizados
+Backend
 
-Testes do pipeline
+JUnit
 
-Teste do container no ACI
+Testes de controller
 
-Teste de conexão com banco
+Testes de service
 
-Testes manuais da interface
+Testes de integração JPA
 
-📊 11. Resultados finais
-Contagem final (SQL):
+SQL
 
-usuários: 30
+Functions
 
-categorias: 15
+Procedures
 
-registros: 450
+JSON export
 
-atividades: 2250
+Auditoria (triggers)
 
-habitos: 30
+Cloud
 
-recomendacoes: 30
+Teste de build
 
-audit_log: 2760
+Teste de imagem
 
-Perfeito para validação da GS.
+Teste ACR push
 
-🏁 12. Conclusão
+Teste ACI app
 
-✔ CI
-✔ CD
-✔ Docker
-✔ Containers
-✔ Azure SQL
-✔ JSON
-✔ CRUD
-✔ IA
-✔ Auditoria
-✔ Pipeline automatizado
-✔ Estrutura DevOps completa
+Teste ACI SQL
 
+📊 12. Resultado Final (Contagem SQL)
 
+Executado no Azure SQL Container:
 
+Tabela	Total
+Usuários	30
+Categorias	15
+Registros	450
+Atividades	2250
+Hábitos	30
+Recomendações	30
+Audit Log	2760
+📁 13. Estrutura do Repositório
+/dockerfiles
+   └── Dockerfile.ci
+/scripts
+   ├── script-infra-01-rg-acr.sh
+   ├── script-infra-02-aci-sql.sh
+   └── script-infra-03-aci-app.sh
+/src/main/java
+azure-pipelines.yml
+README.md
+
+👥 14. Equipe
+
+Marcos Ramalho (RM558024) – DevOps, Cloud, Pipelines
+
+Cauã Marcelo Machado – Java, Backend
+
+Gabriel Lima Silva – Banco, Modelagem
+
+🏆 15. Conclusão
+
+Este projeto atende 100% dos requisitos da Global Solution, incluindo:
+
+Banco em container (não PaaS)
+
+Docker organizado
+
+CI/CD completo
+
+Deploy no Azure
+
+CRUD JSON no README
+
+Exportação JSON
+
+Auditoria
+
+IA integrada
+
+Aplicação Web + API
+
+Documentação profissional
