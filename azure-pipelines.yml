@@ -15,7 +15,7 @@ variables:
   # Nome do repositório da imagem dentro do ACR
   imageRepository: 'healthhelp-gs'
 
-  # Endereço do seu ACR
+  # Endereço do seu ACR (login server)
   containerRegistry: 'acrhealthhelprm558024.azurecr.io'
 
   # Tag que será usada na imagem 
@@ -38,7 +38,7 @@ stages:
           jdkArchitectureOption: 'x64'
           jdkSourceOption: 'PreInstalled'
 
-      # Build + testes com Gradle
+      # Build + testes com Gradle (gera o JAR em build/libs)
       - task: Gradle@3
         displayName: 'Gradle clean test bootJar'
         inputs:
@@ -61,11 +61,13 @@ stages:
       - task: Docker@2
         displayName: 'Build e Push da imagem no ACR'
         inputs:
-          # NOME EXATO do service connection DOCKER que você criou
+          # Service connection DOCKER (ACR) que você criou no DevOps
           containerRegistry: 'sc-acr-healthhelp2'
           repository: '$(imageRepository)'
           command: 'buildAndPush'
-          Dockerfile: 'dockerfiles/Dockerfile.ci'   
+          Dockerfile: 'dockerfiles/Dockerfile.ci'
+          # >>> AQUI: contexto do build é a raiz do repo
+          buildContext: '$(System.DefaultWorkingDirectory)'
           tags: |
             $(dockerTag)
 
