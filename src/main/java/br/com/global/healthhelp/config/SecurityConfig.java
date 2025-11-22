@@ -20,19 +20,40 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/css/**", "/js/**", "/images/**").permitAll()
+                        // Rotas públicas
+                        .requestMatchers(
+                                "/login",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**"
+                        ).permitAll()
+
+                        // Protege Swagger — login obrigatório
+                        .requestMatchers(
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
+                        ).authenticated()
+
+                        // Todo o resto também protegido
                         .anyRequest().authenticated()
                 )
+
+                // Config login
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/", true)
                         .permitAll()
                 )
+
+                // Config logout
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 )
+
+                // CSRF
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 );
@@ -42,9 +63,10 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
+
         UserDetails admin = User.withUsername("admin")
                 .password("{noop}admin1234")
-                .roles("USER", "ADMIN")
+                .roles("ADMIN")
                 .build();
 
         return new InMemoryUserDetailsManager(admin);
