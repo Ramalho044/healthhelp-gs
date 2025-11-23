@@ -7,8 +7,8 @@ SUBSCRIPTION="2TDSPW-RM558024-CauãMarceloMachado"
 RG_NAME="rg-healthhelp"
 SQL_ACI_NAME="aci-healthhelp-sql"
 
-# Senha do SA 
-SA_PASSWORD="${MSSQL_SA_PASSWORD:-SqlAdmin#2025!}"
+# Senha correta do SA (MESMA usada na criação do container)
+SA_PASSWORD="${MSSQL_SA_PASSWORD:-SqlAdmin!2025!}"
 
 echo ">> [DB-INIT] Selecionando subscription..."
 az account set --subscription "$SUBSCRIPTION"
@@ -34,8 +34,12 @@ if [ ! -f "$SCRIPT_PATH" ]; then
 fi
 
 echo ">> [DB-INIT] Aplicando script do banco..."
-sqlcmd -S "${SQL_FQDN},1433" \
-  -U sa -P "$SA_PASSWORD" \
-  -i "$SCRIPT_PATH"
+/opt/mssql-tools18/bin/sqlcmd \
+  -S "${SQL_FQDN},1433" \
+  -U sa \
+  -P "$SA_PASSWORD" \
+  -d master \
+  -i "$SCRIPT_PATH" \
+  -C
 
-echo ">> [DB-INIT] Banco HealthHelp criado e populado com sucesso."
+echo ">> [DB-INIT] Banco HealthHelp criado e populado com sucesso!"

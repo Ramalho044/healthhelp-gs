@@ -39,9 +39,10 @@ az container create \
   --dns-name-label "$DNS_NAME_LABEL" \
   --ports 8080 \
   --environment-variables \
-    SPRING_DATASOURCE_URL="jdbc:sqlserver://healthhelp-sql-gs.brazilsouth.azurecontainer.io:1433;databaseName=HealthHelp;encrypt=true;trustServerCertificate=true" \
-    SPRING_DATASOURCE_USERNAME="Global" \
-    SPRING_DATASOURCE_PASSWORD="Healthhelp2025!"
+  SPRING_DATASOURCE_URL="jdbc:sqlserver://healthhelp-sql-gs.br...abaseName=HealthHelp;encrypt=true;trustServerCertificate=true" \
+  SPRING_DATASOURCE_USERNAME="Global" \
+  SPRING_DATASOURCE_PASSWORD="Healthhelp2025!"
+
 
 echo ">> [APP-ACI] Container criado com sucesso."
 echo "   App:    http://${DNS_NAME_LABEL}.brazilsouth.azurecontainer.io:8080"
