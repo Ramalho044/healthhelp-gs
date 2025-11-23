@@ -16,27 +16,6 @@ repositories {
 }
 
 dependencies {
-
-    // Spring Boot CORE
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.3.2'
-    id 'io.spring.dependency-management' version '1.1.5'
-}
-
-group = 'br.com.fiap'
-version = '0.0.1-SNAPSHOT'
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-}
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -60,36 +39,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     implementation 'org.commonmark:commonmark:0.27.0'
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
-}
-
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-cache'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-
-    // SQL SERVER 
-    implementation 'com.microsoft.sqlserver:mssql-jdbc:12.8.1.jre11'
-
-    // Swagger / OpenAPI 3 UI
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
-
-    // Markdown (CommonMark) – CORREÇÃO
-    implementation 'org.commonmark:commonmark:0.22.0'
-
-    // Spring AI OpenAI
-    implementation 'org.springframework.ai:spring-ai-starter-model-openai:1.0.0'
-
-    // Lombok
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-
-    // Tests
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {
