@@ -16,6 +16,7 @@ repositories {
 }
 
 dependencies {
+    // Spring Boot CORE
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -24,23 +25,27 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
+    // SQL SERVER (container na Azure)
+    implementation 'com.microsoft.sqlserver:mssql-jdbc:12.8.1.jre11'
+
     // Swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
 
     // Spring AI
     implementation 'org.springframework.ai:spring-ai-starter-model-openai:1.0.0'
 
-    // Oracle
-    runtimeOnly 'com.oracle.database.jdbc:ojdbc8:21.13.0.0'
+    // Markdown (CommonMark)
+    implementation 'org.commonmark:commonmark:0.27.0'
 
+    // Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
+    // Tests
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-    implementation 'org.commonmark:commonmark:0.27.0'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
 }
+''
