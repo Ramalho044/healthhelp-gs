@@ -28,8 +28,8 @@ public class UsuarioController {
 
     @PostMapping
     public String salvar(@Valid @ModelAttribute Usuario usuario,
-                        BindingResult result,
-                        RedirectAttributes redirectAttributes) {
+                         BindingResult result,
+                         RedirectAttributes redirectAttributes) {
 
         // Verifica erros de validação
         if (result.hasErrors()) {
