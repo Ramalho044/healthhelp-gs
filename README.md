@@ -25,7 +25,6 @@ Porta: 1433
 Usuário: Global
 Senha: Healthhelp2025!
 Database: HealthHelp
-```
 
 ### Credenciais de Acesso
 ```
