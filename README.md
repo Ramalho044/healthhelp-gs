@@ -307,9 +307,9 @@ README.md
 
 ## 14. Equipe
 
-- **Marcos Ramalho (RM558024)** – DevOps, Cloud, Pipelines
-- **Cauã Marcelo Machado** – Java, Backend
-- **Gabriel Lima Silva** – Banco, Modelagem
+Gabriel Lima Silva - RM 556773 
+Cauã Marcelo Da Silva Machado - RM 558024 
+Marcos Ramalho - RM 554611 
 
 ---
 
