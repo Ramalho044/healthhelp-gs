@@ -38,20 +38,24 @@ stages:
           jdkArchitectureOption: 'x64'
           jdkSourceOption: 'PreInstalled'
 
-      # Build + testes com Gradle (gera o JAR em build/libs)
-      - task: Gradle@3
-        displayName: 'Gradle clean test bootJar'
-        inputs:
-          gradleWrapperFile: 'gradlew'
-          gradleOptions: '-Xmx3072m'
-          publishJUnitResults: true
-          testResultsFiles: '**/build/test-results/test/*.xml'
-          tasks: 'clean test bootJar'
+      # Configura o Gradle Wrapper como executável (caso necessário)
+      - script: |
+          chmod +x gradlew
+        displayName: 'Permitir execução do Gradle Wrapper'
 
-      # Publica resultado de testes 
+      # Limpa e compila o projeto
+      - script: |
+          ./gradlew clean build -x test
+        displayName: 'Gradle Build (sem testes)'
+
+      # Executa os testes (separado, para publicar resultados)
+      - script: |
+          ./gradlew test
+        displayName: 'Executar Testes (Gradle)'
+
+      # Publica os resultados de teste JUnit (caso existam)
       - task: PublishTestResults@2
-        displayName: 'Publicar resultados de teste JUnit'
-        condition: succeededOrFailed()
+        displayName: 'Publicar Resultados de Teste'
         inputs:
           testResultsFormat: 'JUnit'
           testResultsFiles: '**/build/test-results/test/*.xml'
