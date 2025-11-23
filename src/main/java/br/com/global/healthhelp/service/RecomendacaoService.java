@@ -2,17 +2,17 @@ package br.com.global.healthhelp.service;
 
 import br.com.global.healthhelp.dto.RecomendacaoDTO;
 import br.com.global.healthhelp.model.Atividade;
-import br.com.global.healthhelp.model.Recomendacao;
 import br.com.global.healthhelp.model.RegistroDiario;
 import br.com.global.healthhelp.model.Usuario;
 import br.com.global.healthhelp.repository.AtividadeRepository;
 import br.com.global.healthhelp.repository.RecomendacaoRepository;
 import br.com.global.healthhelp.repository.RegistroDiarioRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -45,16 +45,20 @@ public class RecomendacaoService {
         sb.append("Responda em português brasileiro, em tópicos.\n\n");
 
         for (RegistroDiario r : registros) {
-            sb.append("Dia ").append(r.getDataRegistro())
-                    .append(" (score: ").append(r.getPontuacaoEquilibrio()).append(") - ")
-                    .append(r.getObservacoes()).append("\n");
 
-            List<Atividade> atividades = atividadeRepo.findByRegistroDiario(r);
+            sb.append("Dia: ").append(r.getDataRef()).append("\n")
+                    .append("Score: ").append(r.getPontuacaoEquilibrio()).append("\n")
+                    .append("Observações: ").append(r.getObservacoes()).append("\n\n");
+
+            // ⬇️ AGORA USANDO O NOME CERTO DO MÉTODO
+            List<Atividade> atividades = atividadeRepo.findByRegistro(r);
+
             for (Atividade a : atividades) {
-                sb.append("  - ").append(a.getCategoria().getNome())
-                        .append(" de ").append(a.getInicio())
-                        .append(" até ").append(a.getFim())
-                        .append(" (").append(a.getDescricao()).append(")\n");
+                sb.append("- ").append(a.getCategoria().getNome()).append("\n")
+                        .append("   início: ").append(a.getInicio()).append("\n")
+                        .append("   fim: ").append(a.getFim()).append("\n")
+                        .append("   descrição: ").append(a.getDescricao()).append("\n")
+                        .append("\n");
             }
         }
 
@@ -64,18 +68,12 @@ public class RecomendacaoService {
                 .call()
                 .content();
 
-        Recomendacao rec = new Recomendacao();
-        rec.setUsuario(usuario);
-        rec.setMensagem(texto);
-        rec.setPontuacaoRelevancia(90);
-
-        rec = recomendacaoRepo.save(rec);
-
         return new RecomendacaoDTO(
-                rec.getId(),
-                rec.getMensagem(),
-                rec.getPontuacaoRelevancia(),
-                rec.getCriadaEm()
+                null,
+                "Recomendações personalizadas de rotina",
+                texto,
+                null,
+                LocalDateTime.now()
         );
     }
 }

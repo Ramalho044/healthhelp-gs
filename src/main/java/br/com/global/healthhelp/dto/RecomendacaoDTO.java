@@ -6,6 +6,7 @@ public record RecomendacaoDTO(
 
         Long id,
         String mensagem,
+        String texto,
         Integer pontuacaoRelevancia,
         LocalDateTime criadaEm
 

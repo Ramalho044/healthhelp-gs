@@ -1,18 +1,17 @@
 package br.com.global.healthhelp.controller;
 
-import br.com.global.healthhelp.dto.RecomendacaoDTO;
 import br.com.global.healthhelp.dto.RegistroDiarioDTO;
 import br.com.global.healthhelp.model.Usuario;
-import br.com.global.healthhelp.service.RecomendacaoService;
+import br.com.global.healthhelp.repository.UsuarioRepository;
 import br.com.global.healthhelp.service.RegistroDiarioService;
-import jakarta.validation.Valid;
+import br.com.global.healthhelp.service.RecomendacaoService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/registros")
@@ -20,27 +19,31 @@ public class RegistroDiarioController {
 
     private final RegistroDiarioService registroService;
     private final RecomendacaoService recomendacaoService;
+    private final UsuarioRepository usuarioRepository;
 
     public RegistroDiarioController(RegistroDiarioService registroService,
-                                    RecomendacaoService recomendacaoService) {
+                                    RecomendacaoService recomendacaoService,
+                                    UsuarioRepository usuarioRepository) {
         this.registroService = registroService;
         this.recomendacaoService = recomendacaoService;
+        this.usuarioRepository = usuarioRepository;
     }
 
-    private Usuario getUsuarioFake() {
-        Usuario u = new Usuario();
-        u.setId(1L);
-        return u;
+    private Usuario getUsuarioAutenticado() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário autenticado não encontrado"));
     }
 
     @PostMapping
-    public ResponseEntity<RegistroDiarioDTO> criar(@RequestBody @Valid RegistroDiarioDTO dto) {
-        var usuario = getUsuarioFake();
+    public ResponseEntity<RegistroDiarioDTO> criar(@RequestBody RegistroDiarioDTO dto) {
+        var usuario = getUsuarioAutenticado();
         var registro = registroService.salvarRegistro(usuario, dto);
 
         var resposta = new RegistroDiarioDTO(
                 registro.getId(),
-                registro.getDataRegistro(),
+                registro.getDataRef(),
                 registro.getPontuacaoEquilibrio(),
                 registro.getObservacoes(),
                 dto.atividades()
@@ -51,21 +54,7 @@ public class RegistroDiarioController {
 
     @GetMapping
     public Page<RegistroDiarioDTO> listar(Pageable pageable) {
-        var usuario = getUsuarioFake();
-        return registroService.listarPorUsuario(usuario, pageable)
-                .map(r -> new RegistroDiarioDTO(
-                        r.getId(),
-                        r.getDataRegistro(),
-                        r.getPontuacaoEquilibrio(),
-                        r.getObservacoes(),
-                        List.of()
-                ));
-    }
-
-    @PostMapping("/recomendacoes")
-    public ResponseEntity<RecomendacaoDTO> gerarRecomendacao() {
-        var usuario = getUsuarioFake();
-        var dto = recomendacaoService.gerarRecomendacao(usuario);
-        return ResponseEntity.ok(dto);
+        var usuario = getUsuarioAutenticado();
+        return registroService.listarPorUsuario(usuario, pageable);
     }
 }

@@ -8,6 +8,5 @@ import java.util.List;
 
 public interface AtividadeRepository extends JpaRepository<Atividade, Long> {
 
-    List<Atividade> findByRegistroDiario(RegistroDiario registroDiario);
-
+    List<Atividade> findByRegistro(RegistroDiario registro);
 }

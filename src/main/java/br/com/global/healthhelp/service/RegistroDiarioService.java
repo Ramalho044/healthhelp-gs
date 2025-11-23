@@ -30,32 +30,46 @@ public class RegistroDiarioService {
 
     @Transactional
     public RegistroDiario salvarRegistro(Usuario usuario, RegistroDiarioDTO dto) {
+
         var registro = new RegistroDiario();
         registro.setUsuario(usuario);
-        registro.setDataRegistro(dto.dataRegistro());
+        registro.setDataRef(dto.dataRegistro());
         registro.setPontuacaoEquilibrio(dto.pontuacaoEquilibrio());
         registro.setObservacoes(dto.observacoes());
 
         registro = registroRepo.save(registro);
 
-        for (AtividadeDTO a : dto.atividades()) {
-            var cat = categoriaRepo.findById(a.idCategoria())
-                    .orElseThrow(() -> new IllegalArgumentException("Categoria inválida"));
+        if (dto.atividades() != null) {
+            for (AtividadeDTO a : dto.atividades()) {
 
-            var atividade = new Atividade();
-            atividade.setRegistroDiario(registro);
-            atividade.setCategoria(cat);
-            atividade.setInicio(a.inicio());
-            atividade.setFim(a.fim());
-            atividade.setDescricao(a.descricao());
+                var categoria = categoriaRepo.findById(a.idCategoria())
+                        .orElseThrow(() ->
+                                new IllegalArgumentException("Categoria inválida: " + a.idCategoria()));
 
-            atividadeRepo.save(atividade);
+                var atividade = new Atividade();
+                atividade.setRegistro(registro);
+                atividade.setCategoria(categoria);
+                atividade.setInicio(a.inicio());
+                atividade.setFim(a.fim());
+                atividade.setDescricao(a.descricao());
+                atividade.setIntensidade1a5(a.intensidade1a5());
+                atividade.setQualidade1a5(a.qualidade1a5());
+
+                atividadeRepo.save(atividade);
+            }
         }
 
         return registro;
     }
 
-    public Page<RegistroDiario> listarPorUsuario(Usuario usuario, Pageable pageable) {
-        return registroRepo.findByUsuario(usuario, pageable);
+    public Page<RegistroDiarioDTO> listarPorUsuario(Usuario usuario, Pageable pageable) {
+        return registroRepo.findByUsuario(usuario, pageable)
+                .map(registro -> new RegistroDiarioDTO(
+                        registro.getId(),
+                        registro.getDataRef(),
+                        registro.getPontuacaoEquilibrio(),
+                        registro.getObservacoes(),
+                        null
+                ));
     }
 }
