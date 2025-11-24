@@ -2,7 +2,7 @@
 
 **Plataforma Web + IA + DevOps Enterprise + Azure Cloud + Docker + SQL Server em Container**
 
-Global Solution 2025 – Engenharia de Software / FIAP.
+Global Solution 2025 – Engenharia de Software / FIAP
 
 ---
 
